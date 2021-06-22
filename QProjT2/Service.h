@@ -23,6 +23,7 @@ public:
 
     void addEthnologist(Ethnologist e);
     void addBuilding(Building b);
+    void updateBuilding(std::string id, Building b);
 
     std::vector<Ethnologist> getAllEthnologists();
     std::vector<Building> getAllBuildings();

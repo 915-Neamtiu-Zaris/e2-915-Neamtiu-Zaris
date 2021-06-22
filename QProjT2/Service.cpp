@@ -66,3 +66,11 @@ std::vector<Building> Service::getAllBuildings()
 {
     return this->repo_b.getAllElements();
 }
+
+void Service::updateBuilding(std::string id, Building b)
+{
+    /*for(int i = 0; i < this->repo_b.getNrElements(); ++i)
+        if(this->repo_b.getAllElements()[i].get_id() == id)
+            this->repo_b.getAllElements()[i] = b;*/
+    this->repo_b.updateElem(id, b);
+}

@@ -85,6 +85,7 @@ inline Window::Window(Service& obs, Ethnologist e, QWidget* parent) : QWidget(pa
     txtLocation->setMaximumSize(300, 25);
     txtDescriptionU->setMaximumSize(300, 25);
     txtLocationU->setMaximumSize(300, 25);
+    txtIdU->setMaximumSize(300, 25);
 
     gLay->addWidget(view, 0, 0, 3, 4);
     gLay->addWidget(btnAdd, 3, 0, 1, 2);
@@ -92,8 +93,9 @@ inline Window::Window(Service& obs, Ethnologist e, QWidget* parent) : QWidget(pa
     gLay->addWidget(txtDescription, 5, 0, 1, 3);
     gLay->addWidget(txtLocation, 6, 0, 1, 3);
     gLay->addWidget(btnUpdate, 7, 0, 1, 2);
-    gLay->addWidget(txtDescriptionU, 8, 0, 1, 3);
-    gLay->addWidget(txtLocationU, 9, 0, 1, 3);
+    gLay->addWidget(txtIdU, 8, 0, 1, 3);
+    gLay->addWidget(txtDescriptionU, 9, 0, 1, 3);
+    gLay->addWidget(txtLocationU, 10, 0, 1, 3);
 
     this->setLayout(gLay);
     this->setMinimumHeight(500);
@@ -136,6 +138,7 @@ inline void Window::populate_model()
 inline void Window::connect_signals()
 {
     QObject::connect(btnAdd, SIGNAL(clicked()), this, SLOT(add_building()));
+    QObject::connect(btnUpdate, SIGNAL(clicked()), this, SLOT(update_building()));
 }
 
 inline void Window::add_building()
@@ -204,5 +207,28 @@ inline void Window::add_building()
 
 inline void Window::update_building()
 {
+    std::string id = this->txtIdU->toPlainText().toStdString();
+    std::string description = this->txtDescriptionU->toPlainText().toStdString();
+    std::string location = this->txtLocationU->toPlainText().toStdString();
 
+    std::vector<Building> buls = this->observable.getAllBuildings();
+    std::string building_sector;
+    for(auto b : buls)
+        if(id == b.get_id())
+            building_sector = b.get_sector();
+
+    if(building_sector != this->eth.get_area())
+    {
+        QMessageBox* msg = new QMessageBox();
+        msg->setText("This ethnologist cannot modify this building.");
+        msg->show();
+        return;
+    }
+
+    Building a;
+    std::vector<std::string> locations = a.tokenize(location, ' ');
+
+    Building b(id, description, this->eth.get_area(), locations);
+    this->observable.updateBuilding(id, b);
+    this->observable.notify();
 }

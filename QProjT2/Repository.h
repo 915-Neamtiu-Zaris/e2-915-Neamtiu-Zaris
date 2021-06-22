@@ -113,16 +113,15 @@ inline T STLRepository<T>::updateElem(std::string name, T newElem)
     // Updates element with the specified name to "newElem".
     // Throws "RepositoryException" if the desired element does not exist.
 
-    if (this->existsElem(name) != nullptr)
-        throw RepositoryException("The element that you want to update does not exist!");
+    //if (this->searchElem(name) != nullptr)
+        //throw RepositoryException("The element that you want to update does not exist!");
 
     T elemTBR;
 
     for(auto& elem : this->vector)
-        if (elem.get_name() == name)
+        if (elem.get_id() == name)
         {
             elemTBR = elem;
-            newElem.set_id(elem.get_id());
             elem = newElem;
         }
 
@@ -155,7 +154,7 @@ inline T* STLRepository<T>::searchElem(std::string name)
     // Returns reference to element with specfied name, nullptr if the element does not exist.
 
     for(int i = 0; i < this->vector.size(); ++i)
-        if(vector[i].get_name() == name)
+        if(vector[i].get_id() == name)
             return &vector[i];
 
     return nullptr;
